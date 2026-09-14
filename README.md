@@ -1,129 +1,93 @@
 # intelligent-banking-document-automation_capstone
-AI-powered banking document automation system using OCR, LLMs, FastAPI, and RAG to classify documents, extract customer information, validate mandatory fields, detect missing documents, and generate structured JSON responses.
-Banking OCR Automation
+An AI-powered banking document automation system that converts uploaded banking forms into structured data using OCR, LLM-based document classification, intelligent field extraction, validation, email notifications, and PostgreSQL.
 
-AI-powered banking document automation workflow that uses OCR, OpenAI LLMs, n8n workflow automation, validation, email notification, and PostgreSQL to process banking forms and convert unstructured documents into structured JSON.
+The workflow is orchestrated using n8n and uses OpenAI-based AI agents for document understanding.
 
-The workflow receives a banking form through a webhook, sends the document to an OCR service, classifies the form using an OpenAI model, routes it to the appropriate extraction agent, validates mandatory fields, generates an acknowledgement ID, and stores the processed request in PostgreSQL.
+🚀 **Project Overview**
 
-**Key Features**
-Banking document upload
-OCR-based text extraction
-AI-based document classification
-Form-specific information extraction
-Mandatory-field validation
-Missing-field detection
-Complete/incomplete application handling
-Acknowledgement ID generation
-Email notification
-PostgreSQL persistence
-Structured JSON extraction
-n8n workflow orchestration
-Supported Banking Forms
+Traditional banking form processing requires manual verification and data entry.
 
-The current AI classifier supports the following banking forms:
+This solution automates the process:
 
-Account Opening Form
-ATM/Debit Card Block or Replacement Request
-Cheque Book Request Form
-Address Change Request Form
-RTGS/NEFT Fund Transfer Form
-KYC Update Form
-Locker Access / Surrender Request Form
-Architecture
-Customer / Banking User
-          |
-          v
-     n8n Webhook
-          |
-          v
-      OCR Service
-          |
-          v
-    Document Text
-          |
-          v
-  AI Form Classifier
-          |
-          v
-     Form Routing
-          |
-    +-----+-----+-----+
-    |     |     |     |
-    v     v     v     v
- Account ATM   KYC  RTGS/NEFT
- Opening Card Update Transfer
-    |
-    +---- Other Form Agents
-          |
-          v
-   Structured JSON
-          |
-          v
-      Validation
-          |
-       +--+--+
-       |     |
-       v     v
-    Missing Complete
-       |     |
-       v     v
-     Email  ACK ID
-       |     |
-       +--+--+
-          |
-          v
-      PostgreSQL
-          |
-          v
-     Final Response
+Upload → OCR → AI Classification → Data Extraction → Validation → Acknowledgement → Database
 
-The documented flow describes the stages as upload, local file handling, Docling OCR, OpenAI/Gemini classification, form routing, field extraction, validation, missing/complete branching, email/acknowledgement processing, database update, and final processing.
+The system identifies the banking form, extracts the required fields, checks mandatory information, generates an acknowledgement ID, sends an email notification, and stores the processed request in PostgreSQL.
 
-Technology Stack
-Component	Technology
-Workflow Automation	n8n
-Programming	Python
-OCR	Docling
-LLM	OpenAI GPT-5-mini
-AI Agents	n8n LangChain AI Agents
-Database	PostgreSQL
-Database Format	JSONB
-Email	Gmail
-API	Webhook / HTTP
-Output	Structured JSON
+🏗️ **Architecture**
+                    Customer
+                       │
+                       ▼
+                ┌─────────────┐
+                │   Webhook   │
+                │  File Upload│
+                └──────┬──────┘
+                       │
+                       ▼
+                ┌─────────────┐
+                │     OCR     │
+                │  Docling    │
+                └──────┬──────┘
+                       │
+                       ▼
+             ┌────────────────────┐
+             │ AI Document        │
+             │ Classification      │
+             └─────────┬──────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ Form Type Router│
+              └────────┬────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+   Account Form    KYC Form      RTGS/NEFT
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ AI Data         │
+              │ Extraction      │
+              └────────┬────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ Validation      │
+              │ Missing Fields  │
+              └────────┬────────┘
+                       │
+                 ┌─────┴─────┐
+                 ▼           ▼
+             COMPLETE     INCOMPLETE
+                 │           │
+                 ▼           ▼
+          Acknowledgement   Pending
+                 │          Information
+                 └─────┬─────┘
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+        PostgreSQL            Gmail
 
-The n8n workflow uses an upload webhook and calls an OCR endpoint at /extract; the configured OpenAI chat model is gpt-5-mini.
+        AI Capabilities
+1. **Document Classification**
 
-Document Upload
-
-The workflow starts with an HTTP POST webhook using the path:
-
-/upload-form
-
-The uploaded file is then passed to the OCR service through an HTTP multipart request.
-
-AI Document Classification
-
-After OCR, the extracted document text is passed to an AI classifier.
-
-The classifier determines:
+The AI classifier analyzes OCR text and identifies the banking form type with a confidence level:
 
 {
-  "form_type": "",
-  "confidence": "HIGH|MEDIUM|LOW",
-  "reason": ""
+  "form_type": "Account Opening Form",
+  "confidence": "HIGH",
+  "reason": "Detected account opening related fields"
 }
 
-The result is then used by the routing logic to select the appropriate form-specific extraction agent.
+The current classifier supports seven banking form types.
 
-Form-Specific AI Extraction
+2. **Intelligent Information Extraction**
 
-Each supported form has its own extraction prompt and JSON schema.
+After classification, the document is routed to a form-specific AI extraction agent.
 
-Account Opening
-
-Extracts information such as:
+For example, an Account Opening Form can extract:
 
 Customer name
 Date of birth
@@ -139,186 +103,109 @@ Nominee details
 Initial deposit
 Signature
 
-Mandatory fields are checked and the application is marked COMPLETE or INCOMPLETE.
+Mandatory fields are automatically validated.
 
-RTGS/NEFT
+	
+Processing Flow
+Step 1 — Upload
 
-Extracts:
+Customer uploads a banking document through the n8n webhook.
 
-Transfer type
-Customer name
-Debit account number
-Beneficiary name
-Beneficiary account number
-Beneficiary bank
-IFSC
-Transfer amount
-Currency
-Payment purpose
-Transaction date
-Mobile number
-Charges
-Signature
+Step 2 — OCR
 
-The supported transfer types are RTGS and NEFT.
+The uploaded document is sent to the OCR service and converted into text.
 
-KYC Update
+Step 3 — AI Classification
 
-Extracts:
+The extracted text is analyzed by the OpenAI model to determine the document type. The workflow is configured with gpt-5-mini.
 
-Customer information
-Account number
-PAN
-Aadhaar
-Mobile number
-Email
-Address
-Occupation
-Income
-KYC update type
-Documents submitted
-Signature
+Step 4 — Intelligent Routing
 
-The workflow also supports multiple KYC update types and multiple submitted documents.
+Based on the detected form type, n8n routes the request to the corresponding AI extraction agent.
 
-ATM/Debit Card
+Step 5 — Data Extraction
 
-The extraction workflow handles:
+The selected AI agent extracts the relevant fields into structured JSON.
 
-Customer name
-Account number
-Last four card digits
-Request type
-Reason
-Registered mobile number
-Email
-Branch
-Request date
-Signature
-Cheque Book
+Step 6 — Validation
 
-The workflow extracts:
+Mandatory fields are checked.
 
-Customer name
-Account number
-Account type
-Branch
-Number of leaves
-Delivery mode
-Mobile number
-Email
-Request date
-Signature
-Validation
+All mandatory fields present
+          │
+          ▼
+       COMPLETE
 
-After AI extraction, the workflow checks the missing_fields array.
+or
 
-missing_fields.length > 0
+Mandatory field missing
+          │
+          ▼
+      INCOMPLETE
+Step 7 — Acknowledgement
 
-If mandatory information is missing:
+An acknowledgement ID is generated for the request.
 
-INCOMPLETE
-     |
-     v
-Generate Acknowledgement ID
-     |
-     v
-Send Email
+Step 8 — Notification
 
-If all required information is available:
+The customer receives an email containing the acknowledgement information. The workflow has separate handling for missing-field and completed requests.
 
-COMPLETE
-     |
-     v
-Generate Acknowledgement ID
-     |
-     v
-Store in PostgreSQL
-     |
-     v
-Send Acknowledgement Email
+Step 9 — Database Storage
 
-The workflow explicitly branches based on whether missing fields exist.
+The processed request is stored in PostgreSQL.
 
-Acknowledgement ID
+**PostgreSQL**
 
-The workflow generates acknowledgement IDs in the format:
-
-ACK-HDFC-YYYYMMDD-XXXX
-
-The application status is set based on the validation result.
-
-Email Notification
-
-The workflow sends acknowledgement emails for both missing-field and complete applications.
-
-For incomplete requests, the email includes the pending/missing information and acknowledgement ID.
-
-For completed requests, the acknowledgement ID and form type are included in the email.
-
-PostgreSQL Database
-
-Processed banking form requests are stored in:
+The main table is:
 
 banking_form_requests
 
-The table contains:
+| Column             | Type         |
+| ------------------ | ------------ |
+| id                 | integer      |
+| acknowledgement_id | varchar(50)  |
+| form_type          | varchar(100) |
+| application_status | varchar(50)  |
+| extracted_json     | jsonb        |
+| missing_fields     | jsonb        |
+| created_at         | timestamp    |
 
-Column	Type
-id	integer
-acknowledgement_id	varchar(50)
-form_type	varchar(100)
-application_status	varchar(50)
-extracted_json	jsonb
-missing_fields	jsonb
-created_at	timestamp
+**Technology Stack**
+Workflow Automation     → n8n
+Programming             → Python
+OCR                     → Docling
+LLM                     → OpenAI GPT-5-mini
+AI Agents               → n8n LangChain
+Database                → PostgreSQL
+Database Format         → JSONB
+Email                   → Gmail
+API                     → HTTP Webhook
 
-The acknowledgement ID is unique and the id column is the primary key.
+**Banking_OCR_Automation.json**
 
-Data Storage
+**Complete n8n workflow containing:**
 
-The workflow stores the complete extracted JSON in the extracted_json JSONB column and the missing fields separately as JSONB. The SQL agent is configured to execute the generated PostgreSQL statement through the Postgres tool.
+Webhook
+OCR integration
+AI classification
+Form routing
+AI extraction agents
+Validation
+Acknowledgement generation
+Email notification
+PostgreSQL integration
 
-Example Extracted JSON
-{
-  "form_type": "RTGS/NEFT Fund Transfer Form",
-  "transfer_type": "NEFT",
-  "customer_name": "Rajesh Kumar",
-  "debit_account_number": "50101122334455",
-  "beneficiary_name": "Anita Sharma",
-  "beneficiary_account_number": "98765432100123",
-  "beneficiary_bank_name": "State Bank of India",
-  "beneficiary_ifsc_code": "SBIN0001234",
-  "transfer_amount": "250000",
-  "currency": "INR",
-  "missing_fields": [],
-  "validation_status": "COMPLETE"
-}
-End-to-End Processing
-1. Upload Banking Form
-          ↓
-2. n8n Webhook
-          ↓
-3. OCR Processing
-          ↓
-4. Extract Document Text
-          ↓
-5. AI Form Classification
-          ↓
-6. Form Type Routing
-          ↓
-7. Form-Specific AI Extraction
-          ↓
-8. Structured JSON
-          ↓
-9. Mandatory Field Validation
-          ↓
-10. Missing / Complete Decision
-          ↓
-11. Generate Acknowledgement ID
-          ↓
-12. Email Notification
-          ↓
-13. PostgreSQL Storage
-          ↓
-14. Ready for Processing
+**DDL.txt**
+
+PostgreSQL table definition for storing processed banking requests.
+
+
+🎯 Business Benefits
+Reduces manual data entry
+Automates document classification
+Extracts structured information from unstructured forms
+Detects missing mandatory information
+Provides acknowledgement tracking
+Reduces processing time
+Standardizes banking document processing
+Creates a structured database record for downstream processing
