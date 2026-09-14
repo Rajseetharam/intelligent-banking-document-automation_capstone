@@ -15,45 +15,7 @@ The system identifies the banking form, extracts the required fields, checks man
 
 ## 🏗️ Architecture
 
-```mermaid
-flowchart TD
-
-    A[Customer] --> B[Webhook<br/>File Upload]
-
-    B --> C[OCR<br/>Docling]
-
-    C --> D[AI Document<br/>Classification]
-
-    D --> E[Form Type Router]
-
-    E --> F1[Account Opening Form]
-    E --> F2[KYC Update Form]
-    E --> F3[RTGS / NEFT Form]
-    E --> F4[ATM / Debit Card Form]
-    E --> F5[Cheque Book Request]
-    E --> F6[Address Change Form]
-    E --> F7[Locker Request Form]
-
-    F1 --> G[AI Data Extraction]
-    F2 --> G
-    F3 --> G
-    F4 --> G
-    F5 --> G
-    F6 --> G
-    F7 --> G
-
-    G --> H[Validation<br/>Missing Fields]
-
-    H --> I{Validation Status}
-
-    I -->|COMPLETE| J[Acknowledgement]
-    I -->|INCOMPLETE| K[Pending Information]
-
-    J --> L[PostgreSQL]
-    J --> M[Gmail]
-
-    K --> L
-    K --> M
+<img width="712" height="646" alt="image" src="https://github.com/user-attachments/assets/22aac187-3b17-4791-995e-2869c267f57d" />
 
       **  AI Capabilities**
 1. **Document Classification**
