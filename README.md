@@ -132,15 +132,15 @@ API                     → HTTP Webhook
 
 **Complete n8n workflow containing:**
 
-Webhook
-OCR integration
-AI classification
-Form routing
-AI extraction agents
-Validation
-Acknowledgement generation
-Email notification
-PostgreSQL integration
+Webhook,
+OCR integration,
+AI classification,
+Form routing,
+AI extraction agents,
+Validation,
+Acknowledgement generation,
+Email notification,
+PostgreSQL integration,
 
 **DDL.txt**
 
