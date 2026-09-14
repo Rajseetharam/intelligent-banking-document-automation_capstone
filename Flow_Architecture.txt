@@ -1,0 +1,44 @@
+Manual Upload / Streamlit Upload
+            │
+            ▼
+Save File Locally
+            │
+            ▼
+Execute Python
+(Docling OCR)
+            │
+            ▼
+OpenAI/Gemini
+(Form Classification)
+            │
+            ▼
+Switch Node
+(Form Type Routing)
+            │
+            ▼
+OpenAI/Gemini
+(Field Extraction)
+            │
+            ▼
+Code Node
+(Validation)
+            │
+      ┌─────┴──────┐
+      │            │
+      ▼            ▼
+ Missing      Complete
+      │            │
+      ▼            ▼
+ Email        Generate ACK
+      │            │
+      ▼            ▼
+ Wait         SQLite Update
+      │
+      ▼
+ Process Reply
+      │
+      ▼
+ Update JSON
+      │
+      ▼
+ Ready For Processing

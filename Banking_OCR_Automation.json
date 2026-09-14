@@ -1,0 +1,1252 @@
+{
+  "name": "Banking_OCR_Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "upload-form",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -384,
+        1104
+      ],
+      "id": "2abf828b-11b1-44b3-b38f-f86753b1c2e2",
+      "name": "Webhook",
+      "webhookId": "8ca916df-5a0b-4397-a2a3-5d643baa0e65"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/extract",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -160,
+        1104
+      ],
+      "id": "026926f5-30c2-4466-aa6c-4ba4475438f8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        1328
+      ],
+      "id": "eedcbb02-8a90-4386-9a4e-5bafaeb45be0",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = JSON.parse($json.output);\n\nreturn [{\n  json: result\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        1104
+      ],
+      "id": "ce651ea6-5cc9-4c95-ad82-47016d6b5138",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "Address Change Request Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "aa2bc8a4-4d88-4944-9a54-f0147c751b1a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e33950e7-79ed-42b4-85dd-5e767754c84c",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "Account Opening Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "68e90769-bc74-4949-af22-d889b3a29e7c",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "Cheque Book Request Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2804ec5c-86ee-4cfe-a752-3223f92e0c8c",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "ATM/Debit Card Block or Replacement Request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "04dc8213-2650-43e1-8139-4d2cb99f6267",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "RTGS/NEFT Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b623cff5-238c-4bba-85b5-1ec6380a9889",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "KYC Update Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9e876d93-8758-4b53-a8e7-581767556cb1",
+                    "leftValue": "={{ $json.form_type }}",
+                    "rightValue": "Locker Access / Surrender Request Form",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        1024
+      ],
+      "id": "7dbce721-d75c-44a5-9f42-53aa93214958",
+      "name": "DecideFormType"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        16
+      ],
+      "id": "f738251e-e1d5-4bf3-b27f-420a79950ee5",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "shravan.datascience24@gmail.com",
+        "subject": "=Acknowledgment – {{ $('Address Change Request Form_Set').item.json.form_type }}",
+        "message": "=<p>Dear <b>{{ $('Address Change Request Form_generate_AckID_Pending').item.json.customer_name }}</b>,</p>\n\n<p>We have received your <b>{{ $('Address Change Request Form_generate_AckID_Pending').item.json.form_type }}</b>.</p>\n\n<p>\n<b>Acknowledgement ID:</b> {{ $('Address Change Request Form_generate_AckID_Pending').item.json.acknowledgement_id }}\n</p>\n\n<p>\n<b>Pending Information:</b> {{ $('Address Change Request Form_Set').item.json.missing_fields }}\n</p>\n\n<p>\n<b>Branch:</b> HDFC – T Nagar, Chennai\n</p>\n\n<p>\nThank you,<br>\nHDFC Document Automation Team\n</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        704
+      ],
+      "id": "bff529f3-cb72-4da4-ba7c-467584fbbbf5",
+      "name": "Send a message_MissingFields",
+      "webhookId": "964b61cc-6c78-4ee6-bcfe-fcc71d35f5f6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rZjZHCQmW1bdn4Ct",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "shravan.datascience24@gmail.com",
+        "subject": "=Acknowledgment – {{ $('Address Change Request Form_generate_AckID_complete').item.json.form_type }} ({{ $('Address Change Request Form_generate_AckID_complete').item.json.acknowledgement_id}})",
+        "message": "=<p>Dear <b>{{$('Address Change Request Form_generate_AckID_complete').item.json.customer_name}}</b>,</p>\n\n<p>We have received your <b>{{$('Address Change Request Form_generate_AckID_complete').item.json.form_type}}</b>.</p>\n\n<p>\n<b>Acknowledgement ID:</b> {{$('Address Change Request Form_generate_AckID_complete').item.json.acknowledgement_id}}\n</p>\n\n<p>\n<b>Branch:</b> HDFC – T Nagar, Chennai\n</p>\n\n<p>\nThank you,<br>\nHDFC Document Automation Team\n</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        1104
+      ],
+      "id": "b1f84db6-1f4a-4398-a33a-a90907689cc5",
+      "name": "Send a message",
+      "webhookId": "ba639656-2fc6-4cb5-92bf-c1276710ba43",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rZjZHCQmW1bdn4Ct",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($json.output);\n\nreturn [{\n  json: data\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        992
+      ],
+      "id": "73d03ad1-881f-4de8-865e-209c0e179e00",
+      "name": "Address Change Request Form_Set"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f5720aa5-b89b-46a3-903b-26e05db80757",
+              "leftValue": "={{ $json.missing_fields.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1504,
+        976
+      ],
+      "id": "ff8cbc06-3bea-4b9b-8548-35cb4aea4ccf",
+      "name": "If_Address Change Request Form"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\nconst ackId =\n  \"ACK-HDFC-\" +\n  now.getFullYear() +\n  String(now.getMonth()+1).padStart(2,'0') +\n  String(now.getDate()).padStart(2,'0') +\n  \"-\" +\n  Math.floor(Math.random()*10000)\n      .toString()\n      .padStart(4,'0');\n\nreturn [{\n  json: {\n    ...$json,\n    acknowledgement_id: ackId,\n    application_status: 'Missing Fields Pending'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        704
+      ],
+      "id": "fdcc48a8-960f-48c7-8a61-78a0fc585265",
+      "name": "Address Change Request Form_generate_AckID_Pending"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\nconst ackId =\n  \"ACK-HDFC-\" +\n  now.getFullYear() +\n  String(now.getMonth()+1).padStart(2,'0') +\n  String(now.getDate()).padStart(2,'0') +\n  \"-\" +\n  Math.floor(Math.random()*10000)\n      .toString()\n      .padStart(4,'0');\n\nreturn [{\n  json: {\n    ...$json,\n    acknowledgement_id: ackId,\n    applicationStatus: 'Complete'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        1072
+      ],
+      "id": "42fc768f-e841-44f8-978d-d380404f1ae6",
+      "name": "Address Change Request Form_generate_AckID_complete"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "options": {
+          "systemMessage": "You are a PostgreSQL Database Agent for a Banking Document Automation System.\n\nYour responsibility is to generate a PostgreSQL INSERT statement to store processed banking form requests.\n\nTarget Table:\n\nbanking_form_requests\n\nTable Structure:\n\n\nid SERIAL PRIMARY KEY,\nacknowledgement_id VARCHAR(50) UNIQUE,\nform_type VARCHAR(100),\napplication_status VARCHAR(50),\nextracted_json JSONB,\nmissing_fields JSONB,\ncreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n\n\nYou will receive JSON in the following format:\n\n{\n\"acknowledgement_id\": \"\",\n\"form_type\": \"\",\n\"application_status\": \"\",\n\"account_holder_name\": \"\",\n\"email\": \"\",\n\"missing_fields\": [],\n...\n}\n\nInstructions:\n\n1. Generate a valid PostgreSQL INSERT statement.\n2. Store the entire incoming JSON in extracted_json.\n3. Store missing_fields as JSONB.\n4. Map:\n\n   * account_holder_name → customer_name\n   * email → customer_email\n5. Escape any single quotes found in text values.\n6. Use CURRENT_TIMESTAMP for created_at.\n7. You MUST ALWAYS execute the SQL using the tool\n   \"Execute a SQL query in Postgres\".\n\n8. Pass the generated SQL to the tool parameter:\n   sql_statement\n\n9. Never return the SQL as plain text.\n\n10. After the tool execution succeeds, return:\n\n{\n  \"status\": \"SUCCESS\"\n}\n\n11. If the tool execution fails, return:\n\n{\n  \"status\": \"FAILED\",\n  \"reason\": \"<error>\"\n}\n\nExample Output:\n\nINSERT INTO banking_form_requests (\nacknowledgement_id,\nform_type,\napplication_status,\nextracted_json,\nmissing_fields,\ncreated_at\n)\nVALUES (\n'ACK-HDFC-20260621-0001',\n'Address Change Request Form',\n'Complete',\n'{\"account_holder_name\":\"Meena Iyer\"}'::jsonb,\n'[]'::jsonb,\nCURRENT_TIMESTAMP\n);\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1904,
+        1072
+      ],
+      "id": "979f5848-9fda-4da7-8316-da61b9cd8a7d",
+      "name": "Address Change Request Form_AI_SQLAgent2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text from an Address Change Request Form.\n\nExtract all available information.\n\nCorrect obvious OCR mistakes when confidence is high.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"Address Change Request Form\",\n\"account_holder_name\": \"\",\n\"account_number\": \"\",\n\"current_address\": \"\",\n\"new_address\": \"\",\n\"mobile_number\": \"\",\n\"email\": \"\",\n\"address_proof\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nRules:\n\n1. Extract only values present in the document.\n2. If a required field is missing, add it to missing_fields.\n3. If missing_fields is empty, set validation_status to COMPLETE.\n4. Return ONLY JSON.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        -208
+      ],
+      "id": "668024f9-7d25-4356-b3b0-a07cd10951a6",
+      "name": "AddressChange_AI_Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from an Account Opening Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"Account Opening Form\",\n\"account_type\": \"\",\n\"customer_name\": \"\",\n\"date_of_birth\": \"\",\n\"gender\": \"\",\n\"pan_number\": \"\",\n\"aadhaar_number\": \"\",\n\"address\": \"\",\n\"mobile_number\": \"\",\n\"email\": \"\",\n\"occupation\": \"\",\n\"annual_income\": \"\",\n\"nominee_name\": \"\",\n\"nominee_relationship\": \"\",\n\"initial_deposit_amount\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* customer_name\n* date_of_birth\n* account_type\n* pan_number\n* aadhaar_number\n* address\n* mobile_number\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n4. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n5. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n6. Preserve dates in YYYY-MM-DD format whenever possible.\n7. Preserve PAN numbers in uppercase.\n8. Preserve Aadhaar numbers as a\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        2304
+      ],
+      "id": "d184dd45-f5f7-4fcb-a4e4-6ebd11f672df",
+      "name": "Account_Opening_Form_AI_Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        2528
+      ],
+      "id": "5012af20-7104-483b-a71e-c64272d40faa",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "options": {
+          "systemMessage": "You are a PostgreSQL Database Agent for a Banking Document Automation System.\n\nYour responsibility is to generate a PostgreSQL INSERT statement to store processed banking form requests.\n\nTarget Table:\n\nbanking_form_requests\n\nTable Structure:\n\n\nid SERIAL PRIMARY KEY,\nacknowledgement_id VARCHAR(50) UNIQUE,\nform_type VARCHAR(100),\napplication_status VARCHAR(50),\nextracted_json JSONB,\nmissing_fields JSONB,\ncreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n\n\nYou will receive JSON in the following format:\n\n{\n\"acknowledgement_id\": \"\",\n\"form_type\": \"\",\n\"application_status\": \"\",\n\"account_holder_name\": \"\",\n\"email\": \"\",\n\"missing_fields\": [],\n...\n}\n\nInstructions:\n\n1. Generate a valid PostgreSQL INSERT statement.\n2. Store the entire incoming JSON in extracted_json.\n3. Store missing_fields as JSONB.\n4. Map:\n\n   * account_holder_name → customer_name\n   * email → customer_email\n5. Escape any single quotes found in text values.\n6. Use CURRENT_TIMESTAMP for created_at.\n7. You MUST ALWAYS execute the SQL using the tool\n   \"Execute a SQL query in Postgres\".\n\n8. Pass the generated SQL to the tool parameter:\n   sql_statement\n\n9. Never return the SQL as plain text.\n\n10. After the tool execution succeeds, return:\n\n{\n  \"status\": \"SUCCESS\"\n}\n\n11. If the tool execution fails, return:\n\n{\n  \"status\": \"FAILED\",\n  \"reason\": \"<error>\"\n}\n\nExample Output:\n\nINSERT INTO banking_form_requests (\nacknowledgement_id,\nform_type,\napplication_status,\nextracted_json,\nmissing_fields,\ncreated_at\n)\nVALUES (\n'ACK-HDFC-20260621-0001',\n'Address Change Request Form',\n'Complete',\n'{\"account_holder_name\":\"Meena Iyer\"}'::jsonb,\n'[]'::jsonb,\nCURRENT_TIMESTAMP\n);\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1888,
+        592
+      ],
+      "id": "443c2a9d-e513-4a5b-9e9f-f1b431ab9578",
+      "name": "AI_Agent_SQL_Insert_MissingFields"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1968,
+        816
+      ],
+      "id": "d3d7fde7-e383-431d-acec-b40c020c8ef6",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1968,
+        1328
+      ],
+      "id": "2a839c6a-a1bf-4c40-bec9-4df81b2db320",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        416
+      ],
+      "id": "a5d310b6-c2d1-48c8-af10-59cd13c89fde",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        2016
+      ],
+      "id": "728afdd5-05df-4f2f-9d80-8de43e529afc",
+      "name": "OpenAI Chat Model6",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from an RTGS/NEFT Fund Transfer Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"RTGS/NEFT Fund Transfer Form\",\n\"transfer_type\": \"\",\n\"customer_name\": \"\",\n\"debit_account_number\": \"\",\n\"beneficiary_name\": \"\",\n\"beneficiary_account_number\": \"\",\n\"beneficiary_bank_name\": \"\",\n\"beneficiary_branch_name\": \"\",\n\"beneficiary_ifsc_code\": \"\",\n\"transfer_amount\": \"\",\n\"currency\": \"\",\n\"payment_purpose\": \"\",\n\"transaction_date\": \"\",\n\"registered_mobile_number\": \"\",\n\"email\": \"\",\n\"charges_borne_by\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* transfer_type\n* customer_name\n* debit_account_number\n* beneficiary_name\n* beneficiary_account_number\n* beneficiary_bank_name\n* beneficiary_ifsc_code\n* transfer_amount\n* registered_mobile_number\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n4. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n5. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n6. Preserve account numbers exactly as they appear in the document.\n7. Preserve IFSC codes in uppercase.\n8. Convert dates to YYYY-MM-DD format whenever possible.\n9. Preserve transfer amounts exactly as mentioned in the document.\n10. Preserve mobile numbers as numeric strings.\n\nTransfer Type Rules:\n\nPossible values for transfer_type:\n\n* RTGS\n* NEFT\n\nIf a checkbox/tick mark is present, identify the selected option.\n\nCharges Rules:\n\nPossible values for charges_borne_by:\n\n* Remitter\n* Beneficiary\n* Shared\n\nIf a checkbox/tick mark is present, identify the selected option.\n\nAdditional Rules:\n\n11. Currency should default to \"INR\" if the document does not explicitly mention another currency.\n12. If multiple values are detected for a field, choose the most likely value based on surrounding context.\n13. If the customer signature is present, extract the signed name as signature_name.\n14. Do not infer or fabricate information that is not explicitly present in the document.\n15. Correct obvious OCR mistakes only when confidence is high.\n\nOutput Rules:\n\n* Return ONLY valid JSON.\n* Do not include explanations.\n* Do not include markdown formatting.\n* Do not wrap the JSON inside code blocks.\n\nExample Output:\n\n{\n\"form_type\": \"RTGS/NEFT Fund Transfer Form\",\n\"transfer_type\": \"NEFT\",\n\"customer_name\": \"Rajesh Kumar\",\n\"debit_account_number\": \"50101122334455\",\n\"beneficiary_name\": \"Anita Sharma\",\n\"beneficiary_account_number\": \"98765432100123\",\n\"beneficiary_bank_name\": \"State Bank of India\",\n\"beneficiary_branch_name\": \"Anna Nagar Branch\",\n\"beneficiary_ifsc_code\": \"SBIN0001234\",\n\"transfer_amount\": \"250000\",\n\"currency\": \"INR\",\n\"payment_purpose\": \"Education Fees\",\n\"transaction_date\": \"2025-06-14\",\n\"registered_mobile_number\": \"9876543210\",\n\"email\": \"[rajesh.kumar@email.com](mailto:rajesh.kumar@email.com)\",\n\"charges_borne_by\": \"Remitter\",\n\"signature_name\": \"Rajesh Kumar\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        592
+      ],
+      "id": "d1e9c0f2-6227-42f1-bbdf-7606fae970fe",
+      "name": "RTGS_NEFT_AL_Extraction_Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        816
+      ],
+      "id": "0929f400-bf80-4663-b1fa-6436ab447665",
+      "name": "OpenAI Chat Model7",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from a Cheque Book Request Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"Cheque Book Request Form\",\n\"customer_name\": \"\",\n\"account_number\": \"\",\n\"account_type\": \"\",\n\"branch_name\": \"\",\n\"number_of_leaves_requested\": \"\",\n\"delivery_mode\": \"\",\n\"registered_mobile_number\": \"\",\n\"email\": \"\",\n\"request_date\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* customer_name\n* account_number\n* number_of_leaves_requested\n* registered_mobile_number\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n4. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n5. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n6. Preserve account numbers exactly as they appear in the document.\n7. Preserve mobile numbers as numeric strings.\n8. Convert dates to YYYY-MM-DD format whenever possible.\n9. For delivery_mode, possible values include:\n\n   * Branch Pickup\n   * Courier\n   * Registered Address Delivery\n10. If the customer has selected a delivery mode via checkbox/tick mark, extract the selected value.\n11. If multiple values are detected for the same field, choose the most likely value based on context.\n12. If the signature is present, extract the signed name as signature_name.\n13. Do not infer or fabricate values that are not present in the document.\n\nOutput Rules:\n\n* Return ONLY valid JSON.\n* Do not include explanations.\n* Do not include markdown formatting.\n* Do not wrap the JSON inside code blocks.\n\nExample Output:\n\n{\n\"form_type\": \"Cheque Book Request Form\",\n\"customer_name\": \"Ramesh Kumar\",\n\"account_number\": \"50101122334455\",\n\"account_type\": \"Savings\",\n\"branch_name\": \"HDFC T Nagar\",\n\"number_of_leaves_requested\": \"50\",\n\"delivery_mode\": \"Branch Pickup\",\n\"registered_mobile_number\": \"9876543210\",\n\"email\": \"[ramesh.kumar@email.com](mailto:ramesh.kumar@email.com)\",\n\"request_date\": \"2025-06-14\",\n\"signature_name\": \"Ramesh Kumar\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        192
+      ],
+      "id": "9b63350d-d482-4c1f-a12f-c8521ea87a3e",
+      "name": "Cheque_book_request_AI_Extraction_Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from a KYC Update Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"KYC Update Form\",\n\"customer_name\": \"\",\n\"customer_id\": \"\",\n\"account_number\": \"\",\n\"date_of_birth\": \"\",\n\"pan_number\": \"\",\n\"aadhaar_number\": \"\",\n\"mobile_number\": \"\",\n\"email\": \"\",\n\"current_address\": \"\",\n\"occupation\": \"\",\n\"annual_income\": \"\",\n\"kyc_update_type\": [],\n\"documents_submitted\": [],\n\"request_date\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* customer_name\n* account_number\n* pan_number\n* mobile_number\n* current_address\n* documents_submitted\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. For array fields, return an empty array [] if no value is found.\n4. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n5. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n6. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n7. Preserve PAN numbers in uppercase.\n8. Preserve Aadhaar numbers as numeric strings.\n9. Preserve account numbers exactly as they appear in the document.\n10. Convert dates to YYYY-MM-DD format whenever possible.\n11. Preserve mobile numbers as numeric strings.\n\nKYC Update Type Rules:\n\nPossible values include:\n\n* Address Update\n* Mobile Number Update\n* Email Update\n* PAN Update\n* Aadhaar Update\n* Occupation Update\n* Income Update\n* Photograph Update\n* Signature Update\n\nIf multiple update types are selected, return all selected values in the kyc_update_type array.\n\nExample:\n\n\"kyc_update_type\": [\n\"Address Update\",\n\"Mobile Number Update\"\n]\n\nDocuments Submitted Rules:\n\nPossible values include:\n\n* Aadhaar Card\n* PAN Card\n* Passport\n* Voter ID\n* Driving License\n* Utility Bill\n* Bank Statement\n* Passport Size Photograph\n* Others\n\nIf multiple documents are attached, return all selected values in the documents_submitted array.\n\nExample:\n\n\"documents_submitted\": [\n\"PAN Card\",\n\"Aadhaar Card\",\n\"Utility Bill\"\n]\n\nAdditional Rules:\n\n12. If the customer signature is present, extract the signed name as signature_name.\n13. If multiple values are detected for a field, choose the most likely value based on surrounding context.\n14. Do not infer or fabricate information that is not explicitly present in the document.\n15. Correct obvious OCR mistakes only when confidence is high.\n\nOutput Rules:\n\n* Return ONLY valid JSON.\n* Do not include explanations.\n* Do not include markdown formatting.\n* Do not wrap the JSON inside code blocks.\n\nExample Output:\n\n{\n\"form_type\": \"KYC Update Form\",\n\"customer_name\": \"Suresh Kumar\",\n\"customer_id\": \"CUST100245\",\n\"account_number\": \"50101122334455\",\n\"date_of_birth\": \"1990-04-12\",\n\"pan_number\": \"ABCDE1234F\",\n\"aadhaar_number\": \"123456789012\",\n\"mobile_number\": \"9876543210\",\n\"email\": \"[suresh.kumar@email.com](mailto:suresh.kumar@email.com)\",\n\"current_address\": \"No.12, MG Road, Chennai - 600017\",\n\"occupation\": \"Private Employee\",\n\"annual_income\": \"650000\",\n\"kyc_update_type\": [\n\"Address Update\",\n\"Mobile Number Update\"\n],\n\"documents_submitted\": [\n\"Aadhaar Card\",\n\"Utility Bill\"\n],\n\"request_date\": \"2025-06-14\",\n\"signature_name\": \"Suresh Kumar\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        992
+      ],
+      "id": "ec1e5390-2072-49fa-afac-8ce4a1cc30df",
+      "name": "KYC_Update_Extraction_AI_AGent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        1216
+      ],
+      "id": "57b5f31d-55b2-4839-91e1-4a4dc2a60218",
+      "name": "OpenAI Chat Model8",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from a Locker Access / Surrender Request Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"Locker Access / Surrender Request Form\",\n\"customer_name\": \"\",\n\"customer_id\": \"\",\n\"account_number\": \"\",\n\"locker_number\": \"\",\n\"locker_branch_name\": \"\",\n\"request_type\": \"\",\n\"reason_for_request\": \"\",\n\"preferred_access_date\": \"\",\n\"registered_mobile_number\": \"\",\n\"email\": \"\",\n\"joint_holder_name\": \"\",\n\"nominee_name\": \"\",\n\"documents_submitted\": [],\n\"request_date\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* customer_name\n* locker_number\n* request_type\n* registered_mobile_number\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. For array fields, return an empty array [] if no value is found.\n4. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n5. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n6. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n7. Preserve account numbers and locker numbers exactly as they appear in the document.\n8. Convert dates to YYYY-MM-DD format whenever possible.\n9. Preserve mobile numbers as numeric strings.\n\nRequest Type Rules:\n\nPossible values for request_type:\n\n* Locker Access\n* Locker Surrender\n\nIf a checkbox/tick mark is present, identify the selected option.\n\nReason Rules:\n\nPossible reasons include:\n\n* Personal Access\n* Locker Closure\n* Change of Branch\n* Deceased Holder\n* No Longer Required\n* Others\n\nIf multiple reasons are detected, select the most appropriate value based on context.\n\nDocuments Submitted Rules:\n\nPossible values include:\n\n* Locker Key\n* Identity Proof\n* Address Proof\n* Death Certificate\n* Nominee Proof\n* Joint Holder Consent\n* Others\n\nIf multiple documents are attached, return all selected values in the documents_submitted array.\n\nExample:\n\n\"documents_submitted\": [\n\"Locker Key\",\n\"Identity Proof\"\n]\n\nAdditional Rules:\n\n10. If a joint holder is present, extract the name into joint_holder_name.\n11. If a nominee is mentioned, extract the name into nominee_name.\n12. If the customer signature is present, extract the signed name as signature_name.\n13. If multiple values are detected for a field, choose the most likely value based on surrounding context.\n14. Do not infer or fabricate information that is not explicitly present in the document.\n15. Correct obvious OCR mistakes only when confidence is high.\n\nOutput Rules:\n\n* Return ONLY valid JSON.\n* Do not include explanations.\n* Do not include markdown formatting.\n* Do not wrap the JSON inside code blocks.\n\nExample Output:\n\n{\n\"form_type\": \"Locker Access / Surrender Request Form\",\n\"customer_name\": \"Ravi Kumar\",\n\"customer_id\": \"CUST100245\",\n\"account_number\": \"50101122334455\",\n\"locker_number\": \"LKR1025\",\n\"locker_branch_name\": \"HDFC T Nagar\",\n\"request_type\": \"Locker Surrender\",\n\"reason_for_request\": \"No Longer Required\",\n\"preferred_access_date\": \"2025-06-20\",\n\"registered_mobile_number\": \"9876543210\",\n\"email\": \"[ravi.kumar@email.com](mailto:ravi.kumar@email.com)\",\n\"joint_holder_name\": \"Anita Kumar\",\n\"nominee_name\": \"Rahul Kumar\",\n\"documents_submitted\": [\n\"Locker Key\",\n\"Identity Proof\"\n],\n\"request_date\": \"2025-06-14\",\n\"signature_name\": \"Ravi Kumar\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        1392
+      ],
+      "id": "4cf3abeb-ca7d-42cb-ac4c-0db6d4923f92",
+      "name": "Locker_Request_Extraction_AI_Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        1616
+      ],
+      "id": "5b127bc2-e070-4e39-a8d0-6f11fc2b983c",
+      "name": "OpenAI Chat Model9",
+      "credentials": {
+        "openAiApi": {
+          "id": "LbJrE9hYiZxaFGU1",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document classifier.\n\nYou will receive OCR extracted text from banking forms.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n\nYour task is to:\n\n1. Determine the form type.\n2. Estimate confidence.\n3. Explain briefly why.\n4. Return ONLY valid JSON.\n\nSupported Forms:\n\n* Account Opening Form\n* ATM/Debit Card Block or Replacement Request\n* Cheque Book Request Form\n* Address Change Request Form\n* RTGS/NEFT Fund Transfer Form\n* KYC Update Form\n* Locker Access / Surrender Request Form\n\nOutput:\n\n{\n\"form_type\": \"\",\n\"confidence\": \"HIGH|MEDIUM|LOW\",\n\"reason\": \"\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        64,
+        1104
+      ],
+      "id": "52f61e9c-1927-4d95-9a47-24b4d58b77a9",
+      "name": "Document_Type_Classifier_AI Agent"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"Output\": \"Upload Successful\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2464,
+        896
+      ],
+      "id": "34657fe0-8b91-41b9-a99b-1d4f77464bac",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('HTTP Request').item.json.document_text }}",
+        "options": {
+          "systemMessage": "You are an expert banking document extraction engine.\n\nYou will receive OCR text extracted from an ATM/Debit Card Block or Replacement Request Form.\n\nThe OCR text may contain:\n\n* spelling mistakes\n* OCR artifacts\n* missing punctuation\n* merged words\n* partially unreadable handwritten text\n\nYour task is to extract all relevant information from the document and return it in a structured JSON format.\n\nCorrect obvious OCR mistakes only when you are highly confident.\n\nReturn ONLY valid JSON.\n\nRequired Output Schema:\n\n{\n\"form_type\": \"ATM/Debit Card Block or Replacement Request Form\",\n\"customer_name\": \"\",\n\"account_number\": \"\",\n\"card_number_last_four_digits\": \"\",\n\"request_type\": \"\",\n\"reason_for_request\": \"\",\n\"registered_mobile_number\": \"\",\n\"email\": \"\",\n\"branch_name\": \"\",\n\"request_date\": \"\",\n\"signature_name\": \"\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE|INCOMPLETE\"\n}\n\nMandatory Fields:\n\n* customer_name\n* account_number\n* request_type\n* registered_mobile_number\n\nExtraction Rules:\n\n1. Extract only information present in the document.\n2. If a value is not available, leave it as an empty string \"\".\n3. If a mandatory field is missing or unreadable, add the field name to missing_fields.\n4. If all mandatory fields are present, set validation_status to \"COMPLETE\".\n5. If one or more mandatory fields are missing, set validation_status to \"INCOMPLETE\".\n6. Preserve account numbers exactly as they appear in the document.\n7. Extract only the last four digits of the debit/ATM card number if available.\n8. Convert dates to YYYY-MM-DD format whenever possible.\n9. Preserve mobile numbers as numeric strings.\n\nRequest Type Rules:\n\nPossible values for request_type:\n\n* Block Card\n* Replace Card\n* Block and Replace Card\n\nIf a checkbox/tick mark is present, identify the selected option.\n\nReason Rules:\n\nPossible reasons include:\n\n* Lost Card\n* Stolen Card\n* Damaged Card\n* Expired Card\n* Card Not Working\n* Others\n\nIf multiple reasons are detected, select the most appropriate one based on context.\n\nAdditional Rules:\n\n10. If the customer signature is present, extract the signed name as signature_name.\n11. If multiple values are detected for a field, choose the most likely value based on surrounding context.\n12. Do not infer or fabricate information that is not explicitly present in the document.\n13. Correct obvious OCR mistakes only when confidence is high.\n\nOutput Rules:\n\n* Return ONLY valid JSON.\n* Do not include explanations.\n* Do not include markdown formatting.\n* Do not wrap the JSON inside code blocks.\n\nExample Output:\n\n{\n\"form_type\": \"ATM/Debit Card Block or Replacement Request Form\",\n\"customer_name\": \"Priya Sharma\",\n\"account_number\": \"50101122334455\",\n\"card_number_last_four_digits\": \"4567\",\n\"request_type\": \"Replace Card\",\n\"reason_for_request\": \"Damaged Card\",\n\"registered_mobile_number\": \"9876543210\",\n\"email\": \"[priya.sharma@email.com](mailto:priya.sharma@email.com)\",\n\"branch_name\": \"HDFC T Nagar\",\n\"request_date\": \"2025-06-14\",\n\"signature_name\": \"Priya Sharma\",\n\"missing_fields\": [],\n\"validation_status\": \"COMPLETE\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        1792
+      ],
+      "id": "d2141a4f-7f3f-4a87-a41b-5becb4490ad9",
+      "name": "ATM_DebitCard_Extraction_AI_Agent"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $fromAI('sql_statement') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        2096,
+        848
+      ],
+      "id": "b0defbf8-6fd8-439f-b4c0-403ffe6d4190",
+      "name": "Execute a SQL query in Postgres1",
+      "credentials": {
+        "postgres": {
+          "id": "iUKmju52LgeNEZJa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $fromAI('sql_statement') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        2112,
+        1440
+      ],
+      "id": "10362e67-dbf1-41d1-8880-d1dbc1f6027f",
+      "name": "Execute a SQL query in Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "iUKmju52LgeNEZJa",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Document_Type_Classifier_AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Document_Type_Classifier_AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "DecideFormType",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DecideFormType": {
+      "main": [
+        [
+          {
+            "node": "AddressChange_AI_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Account_Opening_Form_AI_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cheque_book_request_AI_Extraction_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ATM_DebitCard_Extraction_AI_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RTGS_NEFT_AL_Extraction_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KYC_Update_Extraction_AI_AGent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Locker_Request_Extraction_AI_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AddressChange_AI_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message_MissingFields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Address Change Request Form_Set": {
+      "main": [
+        [
+          {
+            "node": "If_Address Change Request Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_Address Change Request Form": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_generate_AckID_Pending",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Address Change Request Form_generate_AckID_complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Address Change Request Form_generate_AckID_Pending": {
+      "main": [
+        [
+          {
+            "node": "AI_Agent_SQL_Insert_MissingFields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Address Change Request Form_generate_AckID_complete": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_AI_SQLAgent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AddressChange_AI_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Account_Opening_Form_AI_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Account_Opening_Form_AI_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI_Agent_SQL_Insert_MissingFields": {
+      "main": [
+        [
+          {
+            "node": "Send a message_MissingFields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI_Agent_SQL_Insert_MissingFields",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Address Change Request Form_AI_SQLAgent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Address Change Request Form_AI_SQLAgent2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Cheque_book_request_AI_Extraction_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ATM_DebitCard_Extraction_AI_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RTGS_NEFT_AL_Extraction_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cheque_book_request_AI_Extraction_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "KYC_Update_Extraction_AI_AGent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model9": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Locker_Request_Extraction_AI_Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RTGS_NEFT_AL_Extraction_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KYC_Update_Extraction_AI_AGent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Locker_Request_Extraction_AI_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document_Type_Classifier_AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ATM_DebitCard_Extraction_AI_Agent": {
+      "main": [
+        [
+          {
+            "node": "Address Change Request Form_Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query in Postgres1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI_Agent_SQL_Insert_MissingFields",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query in Postgres": {
+      "ai_tool": [
+        [
+          {
+            "node": "Address Change Request Form_AI_SQLAgent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ec526327-5c28-4481-9b50-81699f4212c4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f209c8a1b959d86791481c11468b8465c7e53e1214a0f730675916a8d5ce5369"
+  },
+  "id": "1rX66Ea1N2tHLmWl",
+  "tags": [
+    {
+      "updatedAt": "2026-06-20T08:26:46.809Z",
+      "createdAt": "2026-06-20T08:26:46.809Z",
+      "id": "GqXwft1sd2PIAd8n",
+      "name": "capstone_1"
+    }
+  ]
+}

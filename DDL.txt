@@ -1,0 +1,21 @@
+-- Table: public.banking_form_requests
+
+-- DROP TABLE IF EXISTS public.banking_form_requests;
+
+CREATE TABLE IF NOT EXISTS public.banking_form_requests
+(
+    id integer NOT NULL DEFAULT nextval('banking_form_requests_id_seq'::regclass),
+    acknowledgement_id character varying(50) COLLATE pg_catalog."default",
+    form_type character varying(100) COLLATE pg_catalog."default",
+    application_status character varying(50) COLLATE pg_catalog."default",
+    extracted_json jsonb,
+    missing_fields jsonb,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT banking_form_requests_pkey PRIMARY KEY (id),
+    CONSTRAINT banking_form_requests_acknowledgement_id_key UNIQUE (acknowledgement_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.banking_form_requests
+    OWNER to postgres;
