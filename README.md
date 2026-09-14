@@ -13,64 +13,49 @@ Upload → OCR → AI Classification → Data Extraction → Validation → Ackn
 
 The system identifies the banking form, extracts the required fields, checks mandatory information, generates an acknowledgement ID, sends an email notification, and stores the processed request in PostgreSQL.
 
-🏗️ **Architecture**
-                    Customer
-                       │
-                       ▼
-                ┌─────────────┐
-                │   Webhook   │
-                │  File Upload│
-                └──────┬──────┘
-                       │
-                       ▼
-                ┌─────────────┐
-                │     OCR     │
-                │  Docling    │
-                └──────┬──────┘
-                       │
-                       ▼
-             ┌────────────────────┐
-             │ AI Document        │
-             │ Classification      │
-             └─────────┬──────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │ Form Type Router│
-              └────────┬────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        ▼              ▼              ▼
-   Account Form    KYC Form      RTGS/NEFT
-        │              │              │
-        └──────────────┼──────────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │ AI Data         │
-              │ Extraction      │
-              └────────┬────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │ Validation      │
-              │ Missing Fields  │
-              └────────┬────────┘
-                       │
-                 ┌─────┴─────┐
-                 ▼           ▼
-             COMPLETE     INCOMPLETE
-                 │           │
-                 ▼           ▼
-          Acknowledgement   Pending
-                 │          Information
-                 └─────┬─────┘
-                       │
-              ┌────────┴────────┐
-              ▼                 ▼
-        PostgreSQL            Gmail
+## 🏗️ Architecture
 
-        AI Capabilities
+```mermaid
+flowchart TD
+
+    A[Customer] --> B[Webhook<br/>File Upload]
+
+    B --> C[OCR<br/>Docling]
+
+    C --> D[AI Document<br/>Classification]
+
+    D --> E[Form Type Router]
+
+    E --> F1[Account Opening Form]
+    E --> F2[KYC Update Form]
+    E --> F3[RTGS / NEFT Form]
+    E --> F4[ATM / Debit Card Form]
+    E --> F5[Cheque Book Request]
+    E --> F6[Address Change Form]
+    E --> F7[Locker Request Form]
+
+    F1 --> G[AI Data Extraction]
+    F2 --> G
+    F3 --> G
+    F4 --> G
+    F5 --> G
+    F6 --> G
+    F7 --> G
+
+    G --> H[Validation<br/>Missing Fields]
+
+    H --> I{Validation Status}
+
+    I -->|COMPLETE| J[Acknowledgement]
+    I -->|INCOMPLETE| K[Pending Information]
+
+    J --> L[PostgreSQL]
+    J --> M[Gmail]
+
+    K --> L
+    K --> M
+
+      **  AI Capabilities**
 1. **Document Classification**
 
 The AI classifier analyzes OCR text and identifies the banking form type with a confidence level:
@@ -201,11 +186,11 @@ PostgreSQL table definition for storing processed banking requests.
 
 
 🎯 Business Benefits
-Reduces manual data entry
-Automates document classification
-Extracts structured information from unstructured forms
-Detects missing mandatory information
-Provides acknowledgement tracking
-Reduces processing time
-Standardizes banking document processing
-Creates a structured database record for downstream processing
+Reduces manual data entry,
+Automates document classification,
+Extracts structured information from unstructured forms,
+Detects missing mandatory information,
+Provides acknowledgement tracking,
+Reduces processing time,
+Standardizes banking document processing,
+Creates a structured database record for downstream processing.
