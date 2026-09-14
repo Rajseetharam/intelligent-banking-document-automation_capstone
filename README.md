@@ -147,7 +147,7 @@ PostgreSQL integration,
 PostgreSQL table definition for storing processed banking requests.
 
 
-🎯 Business Benefits
+🎯** Business Benefits :**
 Reduces manual data entry,
 Automates document classification,
 Extracts structured information from unstructured forms,
